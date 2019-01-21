@@ -1,6 +1,8 @@
 # Questioner
 This is an application that crowd-sources question suggestions for meet-ups.
 
+# Badges
+
 
 # Summary
 Questioner is an online platform that allows users to crowd-source interesting question suggestions for meetups posted on the site. The Admin creates and posts meetups, and then registered users can post questions they think can be interesting or beneficial to be discussed on a particular meetup.

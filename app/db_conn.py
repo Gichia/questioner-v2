@@ -2,29 +2,22 @@
 import os
 import psycopg2 as pg2
 
-db_url = os.getenv('DATABASE_URL')
-# url = "dbname='questioner' host='localhost' port='5432' user='postgres' password='@Yonknapatwa1'"
 
-def init_connection(db_url):
+def init_connection():
     """Function to connect to db through psycopg"""
+    db_url = os.getenv('DATABASE_URL')
     conn = pg2.connect(db_url)
     return conn
 
-def get_connection():
-    """Function to initialize the database"""
-    db = init_connection(db_url)
-    return db
-
 def create_tables():
     """Function to create tables if the do not exist"""
-    conn = init_connection(db_url)
+    conn = init_connection()
     curr = conn.cursor()
     tables = db_tables()
 
     for query in tables:
         curr.execute(query)
     conn.commit()
-
 
 def db_tables():
     """Queries to create app tables"""

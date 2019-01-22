@@ -1,24 +1,4 @@
-"""Database Class for all db related functions"""
-import os
-import psycopg2 as pg2
-
-
-def init_connection():
-    """Function to connect to db through psycopg"""
-    db_url = os.getenv('DATABASE_URL')
-    conn = pg2.connect(db_url)
-    return conn
-
-def create_tables():
-    """Function to create tables if the do not exist"""
-    conn = init_connection()
-    curr = conn.cursor()
-    tables = db_tables()
-
-    for query in tables:
-        curr.execute(query)
-    conn.commit()
-
+"""Querirs to initialize app database"""
 def db_tables():
     """Queries to create app tables"""
     tbl1 = """CREATE TABLE IF NOT EXISTS meetups (
@@ -64,3 +44,15 @@ def db_tables():
 
     tables = [tbl1, tbl2, tbl3, tbl4, tbl5]
     return tables
+
+def drop_tables():
+    """Function to drop all tables after tests"""
+    tbl1 = """DROP TABLE IF EXISTS users CASCADE"""
+    tbl2 = """DROP TABLE IF EXISTS meetups CASCADE"""
+    tbl3 = """DROP TABLE IF EXISTS questions CASCADE"""
+    tbl4 = """DROP TABLE IF EXISTS comments CASCADE"""
+    tbl5 = """DROP TABLE IF EXISTS rsvp CASCADE"""
+
+    tables = [tbl1, tbl2, tbl3, tbl4, tbl5]
+    return tables
+    

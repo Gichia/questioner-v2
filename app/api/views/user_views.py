@@ -15,14 +15,13 @@ def user_signup():
         firstname = data["firstname"]
         lastname = data["lastname"]
         email = data["email"]
+        phone = data["phone"]
         password = data["password"]
     except:
         return make_response(jsonify({
             "status": 500,
             "message": "Please provide correct details"
         }), 500)
-
-    # phone = data["phone"]
 
     if not firstname.strip():
         return make_response(jsonify({"message": "Please enter first name!"}))
@@ -44,7 +43,7 @@ def user_signup():
     if db.get_email(email):
         return make_response(jsonify({"message": "That email exists!"}))
     
-    db.save_user(firstname, lastname, email, password)
+    db.save_user(firstname, lastname, email, password, phone)
     return make_response(jsonify({"message": "Successfully registered, you can Login!", "status": 201}), 201)
 
 @ver2.route("/auth/login")

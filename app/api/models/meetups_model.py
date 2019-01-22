@@ -20,3 +20,10 @@ class MeetupsClass(BaseModel):
 
         data = self.post_data(query, meetup)
         return data
+
+    def get_meetups(self):
+        """Method to get meetups"""
+        query = """SELECT * FROM meetups"""
+
+        data = self.get_data(query)
+        return data

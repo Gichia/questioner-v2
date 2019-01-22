@@ -56,7 +56,7 @@ def db_tables():
         createdOn CHAR(100) NOT NULL
         )"""
 
-    tbl5 = """CREATE TABLE IF NOT EXISTS users (
+    tbl5 = """CREATE TABLE IF NOT EXISTS app_users (
         user_id serial PRIMARY KEY NOT NULL,
         firstname CHAR(40) NOT NULL,
         lastname CHAR(45) NOT NULL,
@@ -78,6 +78,4 @@ def db_tables():
 
     tables = [tbl1, tbl2, tbl3, tbl4, tbl5, tbl6]
     return tables
-
-if __name__ == '__main__':
-    create_tables()
+ 

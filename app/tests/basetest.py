@@ -13,31 +13,32 @@ class BaseTest(unittest.TestCase):
         """Initializes our app and tests"""
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client()
-        self.db = pg2.connect(os.getenv("TEST_DATABASE_URL"))
-        curr = self.db.cursor()
-        tables = db_tables()
+        self.db = pg2.connect(os.getenv("DATABASE_URL"))
+        self.curr = self.db.cursor()
 
-        for query in tables:
-            curr.execute(query)
+
+    def post(self, url, data):
+        """Method for post tests"""
+        return self.client.post(url, data=json.dumps(data), content_type="application/json")
+
+
+    def get_items(self, url):
+        """Method for get tests"""
+        return self.client.get(url)
+
+    
+    def delete_email(self, email):
+        """Method to delete user email after tests"""
+        query = """DELETE FROM app_users WHERE email=%s"""
+        self.curr.execute(query, (email,))
         self.db.commit()
-
-    def post(self):
-        pass
-
-
-    def get(self):
-        pass
         
 
     def tearDown(self):
         """Tear down the app after running tests"""
-        self.app = None
-        curr = self.db.cursor()
-        tables = drop_tables()
+        self.curr.close()
+        self.db.close()
         
-        for query in tables:
-            curr.execute(query)
-        self.db.commit()
 
 
 if __name__ == '__main__':

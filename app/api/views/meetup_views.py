@@ -12,39 +12,59 @@ db = MeetupsClass()
 @login_required
 def post_meetup(current_user):
     """Register new user endpoint"""
+    message = ''
+    status =200
+    response = {}
+    
     try:
         data = request.get_json()
         topic = data["topic"]
         location = data["location"]
         happeningOn = data["happeningOn"]
+        tags = data["tags"]
+
+        if not location.strip():
+            message = "Please provide a location!"
+            status = 200
+        elif validate.valid_length(location) is False:
+            message = "Location cannot be less than 4 or more than 30 characters"
+            status = 200
+        elif not topic.strip():
+            message = "Please provide a topic!"
+            status = 200
+        elif validate.valid_length(topic) is False:
+            message = "Topic cannot be less than 4 or more than 30 characters"
+            status = 400
+        elif not happeningOn.strip():
+            message = "Please provide a date for the meetup!"
+            status = 200
+        elif current_user[5] is False:
+            message = "Requires Admin Login!"
+            status = 401
+        else:
+            user = dict(
+                user_id=current_user[0],
+                firstname=current_user[1].strip(),
+                lastname=current_user[2].strip(),
+                email = current_user[3].strip(),
+                createdOn=current_user[4].strip(),
+                isAdmin=current_user[5]
+            )
+
+            db.post_meetup(user["user_id"], location, topic, happeningOn, tags)
+            message = "Meetup succesfully created!"
+            status = 201
     except:
-        return make_response(jsonify({"message": "Please provide all relevant meetup details!"}))
+        message = "Please provide all the required fields!"
+        status = 500
 
-    if not topic.strip():
-        return make_response(jsonify({"message": "Please enter topic!"}))
-    elif validate.valid_length(topic) is False:
-        return make_response(jsonify({"message": "Topic cannot be less than 4 or more than 30 characters"}))
-    elif not location.strip():
-        return make_response(jsonify({"message": "Please enter location!"}))
-    elif validate.valid_length(location) is False:
-        return make_response(jsonify({"message": "Location cannot be less than 4 or more than 30 characters"}))
-    elif not happeningOn.strip():
-        return make_response(jsonify({"message": "Please add a date for the meetup!"}))
 
-    user = dict(
-        user_id=current_user[0],
-        firstname=current_user[1].strip(),
-        lastname=current_user[2].strip(),
-        email = current_user[3].strip(),
-        createdOn=current_user[4].strip(),
-        isAdmin=current_user[5]
-    )
-
-    db.post_meetup(user["user_id"], location, topic, happeningOn)
-    return make_response(jsonify({"message": "Meetup successfully created!", "status": 201}), 201)
+    response.update({"status": status, "message": message})
+    return jsonify(response), status
 
 
 @ver2.route("/meetups", methods=["GET"])
 def get_meetups():
+    """Endpoint to get all meetups"""
     return 'Home'
     

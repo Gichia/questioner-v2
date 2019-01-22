@@ -2,6 +2,7 @@ from flask import Flask
 from app.api.utils.errors import bad_request, internal_server_error, not_found
 from app.api.views.user_views import ver2 as v2
 from app.api.views.meetup_views import ver2 as v2
+from app import db_conn
 from instance.config import config
 
 

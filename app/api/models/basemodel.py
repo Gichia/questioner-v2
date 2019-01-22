@@ -8,7 +8,7 @@ class BaseModel:
 
     def get_email(self, email):
         """Method to check if email exist"""
-        query = """SELECT email FROM users WHERE email=%s"""
+        query = """SELECT email FROM app_users WHERE email=%s"""
 
         cursor = self.db.cursor()
         cursor.execute(query, (email,))
@@ -17,12 +17,25 @@ class BaseModel:
 
     def get_user(self, email):
         """Method to find single user with email"""
-        query = """SELECT * FROM users WHERE email=%s"""
+        query = """SELECT * FROM app_users WHERE email=%s"""
 
         cursor = self.db.cursor()
         cursor.execute(query, (email,))
         result = cursor.fetchone()
         return result
+
+
+
+    def delete_user(self, email):
+        """Method to delete users"""
+        user = self.get_user(email)
+        if user:
+            query = """ DELETE FROM app_users WHERE email=%s""" 
+
+            cursor = self.db.cursor()
+            cursor.execute(query, (email,))
+            cursor.commit()
+            return email   
         
 
     def post_data(self, query, data):

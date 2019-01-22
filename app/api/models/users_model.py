@@ -11,18 +11,20 @@ from .basemodel import BaseModel
 class UserClass(BaseModel):
     """Contains relevant db methods"""
         
-    def save_user(self, firstname, lastname, email, password):
+    def save_user(self, firstname, lastname, email, password, phone):
         """Method to add new user to db"""    
         user = {
             "firstname": firstname,
             "lastname": lastname,
             "email": email,
             "created_on": datetime.datetime.now(),
+            "username": email.split('@')[:1],
+            "phonenumber": phone,
             "password": generate_password_hash(password)
         }
 
-        query = """INSERT INTO users (firstname, lastname, email, created_on, password) VALUES
-                    ( %(firstname)s, %(lastname)s, %(email)s, %(created_on)s, %(password)s )"""
+        query = """INSERT INTO users (firstname, lastname, email, created_on, username, phonenumber, password) VALUES
+                    ( %(firstname)s, %(lastname)s, %(email)s, %(created_on)s, %(username)s, %(phonenumber)s, %(password)s )"""
         
         data = self.post_data(query, user)
         return data

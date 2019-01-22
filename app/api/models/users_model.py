@@ -11,20 +11,19 @@ from .basemodel import BaseModel
 class UserClass(BaseModel):
     """Contains relevant db methods"""
         
-    def save_user(self, firstname, lastname, email, password, phone):
+    def save_user(self, data):
         """Method to add new user to db"""    
         user = {
-            "firstname": firstname,
-            "lastname": lastname,
-            "email": email,
+            "firstname": data["firstname"],
+            "lastname": data["lastname"],
+            "email": data["email"],
             "created_on": datetime.datetime.now(),
-            "username": email.split('@')[:1],
-            "phonenumber": phone,
-            "password": generate_password_hash(password)
+            "username": data["email"].split('@')[:1],
+            "phonenumber": data["phone"],
+            "password": generate_password_hash(data["password"])
         }
 
-        query = """INSERT INTO users (firstname, lastname, email, created_on, username, phonenumber, password) VALUES
-                    ( %(firstname)s, %(lastname)s, %(email)s, %(created_on)s, %(username)s, %(phonenumber)s, %(password)s )"""
+        query = """INSERT INTO app_users (firstname, lastname, email, created_on, username, phonenumber, password) VALUES ( %(firstname)s, %(lastname)s, %(email)s, %(created_on)s, %(username)s, %(phonenumber)s, %(password)s )"""
         
         data = self.post_data(query, user)
         return data
@@ -47,7 +46,6 @@ class UserClass(BaseModel):
             if check_password_hash(user_data["password"], password):
                 token = jwt.encode({'sub': user_data["email"], "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, Config.SECRET_KEY)
                 return token.decode("UTF-8")
-
 
 def login_required(f):
     """A decorated function for login required!"""

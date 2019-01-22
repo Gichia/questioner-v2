@@ -11,7 +11,6 @@ def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config[config_name])
     app.config.from_pyfile('config.py')
-    db_conn.create_tables()
     app.register_blueprint(v2)
     app.register_error_handler(404, not_found)
     app.register_error_handler(405, bad_request)

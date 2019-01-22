@@ -1,4 +1,5 @@
 """Base model to initiate db operations"""
+from psycopg2.extras import RealDictCursor
 from app.db_conn import init_connection
 
 class BaseModel:
@@ -45,3 +46,9 @@ class BaseModel:
         self.db.commit()
         return data
         
+    def get_data(self, query):
+        """Method to get data from db"""
+        curr = self.db.cursor(cursor_factory=RealDictCursor)
+        curr.execute(query)
+        result = curr.fetchall()
+        return result

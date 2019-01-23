@@ -41,6 +41,8 @@ class TestMeetups(BaseTest):
         url2 = "http://localhost:5000/api/meetups/0"
         url3 = "http://localhost:5000/api/meetus/1"
 
+        self.post("http://localhost:5000/api/meetups", data)
+
         response = self.get_items(url)
         response2 = self.get_items(url2)
         response3 = self.get_items(url3)
@@ -52,6 +54,8 @@ class TestMeetups(BaseTest):
         self.assertEqual(result["status"], 200)
         self.assertEqual(result2["message"], "Meetup not found!")
         self.assertEqual(result3["message"], "Resource not found!")
+
+        self.delete_meetup("Test Topic")
 
     def test_post_meetup(self):
         """Method to test post meetup endpoint"""

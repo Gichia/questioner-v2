@@ -25,19 +25,19 @@ def post_meetup(current_user):
 
         if not location.strip():
             message = "Please provide a location!"
-            status = 422
+            status = 400
         elif validate.valid_length(location) is False:
             message = "Location cannot be less than 4 or more than 30 characters"
-            status = 422
+            status = 400
         elif not topic.strip():
             message = "Please provide a topic!"
-            status = 422
+            status = 400
         elif validate.valid_length(topic) is False:
             message = "Topic cannot be less than 4 or more than 30 characters"
             status = 400
         elif not happeningOn.strip():
             message = "Please provide a date for the meetup!"
-            status = 422
+            status = 400
         elif current_user[5] is False:
             message = "Requires Admin Login!"
             status = 401

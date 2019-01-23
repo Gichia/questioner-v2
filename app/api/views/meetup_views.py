@@ -95,3 +95,29 @@ def get_upcoming_meetups():
     meetups = db.get_meetups()
 
     return jsonify({"message": "Upcoming meetups", "status": 200, "meetups": meetups}), 200
+
+
+@ver2.route("/meetups/rsvp/<int:meetup_id>", methods=["POST"])
+@login_required
+def meetup_rsvp(current_user, meetup_id):
+    """Meetup rsvp endpoint"""
+    message = ""
+    status =200
+    response = {}
+    
+    try:
+        data = request.get_json()
+        res = data["response"].lower().strip()
+        if (res != "yes" and res != "no" and res != "maybe"):
+            message = "Response can only be Yes, No, or Maybe"
+            status =400
+        else:
+            db.meetup_rsvp(current_user[0], meetup_id, res)
+            message = "RSVP Successfully sent!"
+            status =200
+    except:
+        message = "Please provide a response!"
+        status = 500
+
+    response.update({"status": status, "message": message})
+    return jsonify(response), status

@@ -20,3 +20,29 @@ class QuestionsClass(BaseModel):
 
         data = self.post_data(query, question)
         return data
+
+    def get_single_question(self, question_id):
+        """Method to get specific question"""
+        query = """SELECT * FROM questions WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        result = curr.fetchall()
+            
+        if len(result) == 0:
+            result = None
+                
+        return result
+
+    def get_meetup_questions(self, meetup_id):
+        """Method to get specific meetup questions"""
+        query = """SELECT * FROM questions WHERE meetup_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (meetup_id,))
+        results = curr.fetchall()
+            
+        if len(results) == 0:
+            results = None
+                
+        return results

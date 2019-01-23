@@ -25,8 +25,6 @@ class BaseModel:
         result = cursor.fetchone()
         return result
 
-
-
     def delete_user(self, email):
         """Method to delete users"""
         user = self.get_user(email)
@@ -37,7 +35,6 @@ class BaseModel:
             curr.execute(query, (email,))
             curr.commit()
             return email   
-        
 
     def post_data(self, query, data):
         """Method to post data to db"""

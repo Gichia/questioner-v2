@@ -81,10 +81,17 @@ def get_singel_meetup(meetup_id):
     response.update({"status": status, "message": message, "meetup": meetup})
     return jsonify(response), status
 
-
 @ver2.route("/meetups", methods=["GET"])
 def get_meetups():
     """Endpoint to get all meetups"""
     meetups = db.get_meetups()
 
     return jsonify({"message": "All meetups", "status": 200, "meetups": meetups}), 200
+
+
+@ver2.route("/meetups/upcoming", methods=["GET"])
+def get_upcoming_meetups():
+    """Endpoint to get all upcoming meetups"""
+    meetups = db.get_meetups()
+
+    return jsonify({"message": "Upcoming meetups", "status": 200, "meetups": meetups}), 200

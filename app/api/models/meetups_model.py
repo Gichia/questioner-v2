@@ -40,3 +40,11 @@ class MeetupsClass(BaseModel):
 
         data = self.get_data(query)
         return data
+
+    def get_upcoming(self):
+        """Method to get all upcoming meetups"""
+        query = """SELECT * FROM meetups"""
+
+        data = self.get_data(query)
+        return data
+

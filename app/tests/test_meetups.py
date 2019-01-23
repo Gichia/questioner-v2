@@ -25,7 +25,7 @@ class TestMeetups(BaseTest):
     def test_get_specific_meetup(self):
         """Method to test get specific meetup endpoint"""
         url = "http://localhost:5000/api/meetups/1"
-        url2 = "http://localhost:5000/api/meetups/100"
+        url2 = "http://localhost:5000/api/meetups/0"
         url3 = "http://localhost:5000/api/meetus/100"
 
         response = self.get_items(url)

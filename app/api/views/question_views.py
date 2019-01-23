@@ -76,3 +76,28 @@ def get_meetup_questions(meetup_id):
 
     response.update({"status": status, "message": message, "data": questions})
     return jsonify(response), status
+
+@ver2.route("/questions/upvote/<int:question_id>", methods=["PATCH"])
+@login_required
+def upvote_question(current_user, question_id):
+    """Endpoint to upvote a question"""
+    message = ""
+    status = 200
+    response = {}
+
+    question = db.get_single_question(question_id)
+
+    if not question:
+        message = "That question does not exist!"
+        status = 404
+    elif db.upvote_question(current_user[0], question_id) is False:
+        message = "You have already upvoted!"
+        status = 400
+    else:
+        db.upvote_question(current_user[0], question_id)
+        message = "Question upvoted!"
+        status = 200
+
+    response.update({"status": status, "message": message})
+    return jsonify(response), status
+

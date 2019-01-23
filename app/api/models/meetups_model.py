@@ -21,6 +21,19 @@ class MeetupsClass(BaseModel):
         data = self.post_data(query, meetup)
         return data
 
+    def get_single_meetup(self, meetup_id):
+        """Method to get specific meetup"""
+        query = """SELECT * FROM meetups WHERE meetup_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (meetup_id,))
+        result = curr.fetchall()
+            
+        if len(result) == 0:
+            result = None
+                
+        return result
+
     def get_meetups(self):
         """Method to get meetups"""
         query = """SELECT * FROM meetups"""

@@ -15,4 +15,5 @@ def create_app(config_name):
     app.register_error_handler(404, not_found)
     app.register_error_handler(405, bad_request)
     app.register_error_handler(500, internal_server_error)
+    db_conn.create_tables()
     return app

@@ -78,7 +78,7 @@ class QuestionsClass(BaseModel):
 
     def validate_upvote(self, user_id, question_id):
         """Method to validate if user has voted"""
-        query = """ SELECT user_id FROM votes WHERE question_id=%s"""
+        query = """ SELECT user_id FROM votes WHERE question_id=%s AND is_like=1"""
 
         curr = self.db.cursor()
         curr.execute(query, (question_id,))

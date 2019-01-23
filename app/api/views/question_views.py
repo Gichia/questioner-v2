@@ -14,7 +14,6 @@ validate = Validations()
 @login_required
 def post_question(current_user, meetup_id):
     """ Post question to specific meetup """
-    # Get the requested meetup
 
     message = ""
     status = 200
@@ -57,4 +56,23 @@ def post_question(current_user, meetup_id):
         "body": body
     }
     response.update({"status": status, "message": message, "data": question})
+    return jsonify(response), status
+
+@ver2.route("/questions/<int:meetup_id>", methods=["GET"])
+def get_meetup_questions(meetup_id):
+    """ Get specific meetup questions"""
+    message = ''
+    status = 200
+    response = {}
+
+    questions = db.get_meetup_questions(meetup_id)
+
+    if questions is None:
+        message = "No questions found!"
+        status = 404
+    else:
+        message = "Meetup questions!"
+        status = 200
+
+    response.update({"status": status, "message": message, "data": questions})
     return jsonify(response), status

@@ -47,17 +47,32 @@ class QuestionsClass(BaseModel):
                 
         return results
 
+    def validate_upvote(self, user_id, question_id):
+        """Method to validate if user has voted"""
+        query = """ SELECT user_id FROM votes WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        res = curr.fetchone()
+        return res
+
+
     def upvote_question(self, user_id, question_id):
         """Method to upvote a question"""
-        upvote = {
-            "user_id": user_id,
-            "question_id": question_id,
-            "createdon": datetime.datetime.now(),
-            "is_like": True
-        }
+        res = self.validate_upvote(user_id, question_id)
         
-        query = """INSERT INTO votes (user_id, question_id, createdon, is_like) 
-                VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(is_like)s )"""
+        if res:
+            return False
+        else:
+            upvote = {
+                "user_id": user_id,
+                "question_id": question_id,
+                "createdon": datetime.datetime.now(),
+                "is_like": 1
+            }
+            
+            query = """INSERT INTO votes (user_id, question_id, createdon, is_like) 
+                    VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(is_like)s )"""
 
-        data = self.post_data(query, upvote)
-        return data
+            data = self.post_data(query, upvote)
+            return data

@@ -21,6 +21,20 @@ class MeetupsClass(BaseModel):
         data = self.post_data(query, meetup)
         return data
 
+    def meetup_rsvp(self, user_id, meetup_id, response):
+        rsvp = {
+            "user_id": user_id,
+            "meetup_id": meetup_id,
+            "response": response,
+            "createdon": datetime.datetime.now()
+        }
+
+        query = """INSERT INTO rsvp (meetup_id, user_id, response, createdon) 
+                VALUES ( %(meetup_id)s, %(user_id)s, %(response)s, %(createdon)s )"""
+
+        data = self.post_data(query, rsvp)
+        return data
+
     def get_single_meetup(self, meetup_id):
         """Method to get specific meetup"""
         query = """SELECT * FROM meetups WHERE meetup_id=%s"""

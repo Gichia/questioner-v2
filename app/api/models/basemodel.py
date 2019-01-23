@@ -33,9 +33,9 @@ class BaseModel:
         if user:
             query = """ DELETE FROM app_users WHERE email=%s""" 
 
-            cursor = self.db.cursor()
-            cursor.execute(query, (email,))
-            cursor.commit()
+            curr = self.db.cursor()
+            curr.execute(query, (email,))
+            curr.commit()
             return email   
         
 

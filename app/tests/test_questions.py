@@ -24,6 +24,15 @@ class TestQuestions(BaseTest):
         self.assertEqual(result["status"], 201)
         self.assertEqual(result["message"], "Succesfully added!")
 
+    def test_get_questions(self):
+        """Test all meetups questions"""
+        url = "http://localhost:5000/api/questions/8"
+
+        response = self.get_items(url)
+        result = json.loads(response.data.decode("UTF-8"))
+
+        self.assertEqual(result["status"], 200)
+
     def test_meetup_not_found(self):
         """Test correct response for question not found"""
         url = "http://localhost:5000/api/questions/0"

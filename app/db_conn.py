@@ -73,7 +73,7 @@ def db_tables():
         user_id INT NOT NULL,
         question_id INT NOT NULL,
         createdOn CHAR(100) NOT NULL,
-        is_like BOOLEAN NOT NULL
+        is_like INT NOT NULL
         )"""
 
     tables = [tbl1, tbl2, tbl3, tbl4, tbl5, tbl6]

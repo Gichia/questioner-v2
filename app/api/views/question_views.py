@@ -44,7 +44,7 @@ def post_question(current_user, meetup_id):
                 status = 404
             else:
                 message = "Succesfully added!"
-                status = 200
+                status = 201
     except:
         message = "Please provide correct details"
         status = 500

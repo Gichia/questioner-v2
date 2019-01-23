@@ -99,16 +99,3 @@ def user_login():
 
     response.update({"status": status, "message": message, "token": token})
     return jsonify(response), status
-
-@ver2.route("/auth/delete", methods=["POST"])
-def user_delete():
-    """Register new user endpoint"""
-    data = request.get_json()
-    email = data['email']
-
-    ok = db.delete_user(email)
-
-    if ok:
-        return 'Del'
-    else:
-        return 'Not Ok'

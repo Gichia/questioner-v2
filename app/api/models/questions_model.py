@@ -46,3 +46,18 @@ class QuestionsClass(BaseModel):
             results = None
                 
         return results
+
+    def upvote_question(self, user_id, question_id):
+        """Method to upvote a question"""
+        upvote = {
+            "user_id": user_id,
+            "question_id": question_id,
+            "createdon": datetime.datetime.now(),
+            "is_like": True
+        }
+        
+        query = """INSERT INTO votes (user_id, question_id, createdon, is_like) 
+                VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(is_like)s )"""
+
+        data = self.post_data(query, upvote)
+        return data

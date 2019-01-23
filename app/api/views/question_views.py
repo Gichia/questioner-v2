@@ -101,3 +101,26 @@ def upvote_question(current_user, question_id):
     response.update({"status": status, "message": message})
     return jsonify(response), status
 
+@ver2.route("/questions/downvote/<int:question_id>", methods=["PATCH"])
+@login_required
+def downvote_question(current_user, question_id):
+    """Endpoint to upvote a question"""
+    message = ""
+    status = 200
+    response = {}
+
+    question = db.get_single_question(question_id)
+
+    if not question:
+        message = "That question does not exist!"
+        status = 404
+    elif db.downvote_question(current_user[0], question_id) is False:
+        message = "You have already downvoted!"
+        status = 400
+    else:
+        db.downvote_question(current_user[0], question_id)
+        message = "Question downvoted!"
+        status = 200
+
+    response.update({"status": status, "message": message})
+    return jsonify(response), status

@@ -25,19 +25,19 @@ def post_meetup(current_user):
 
         if not location.strip():
             message = "Please provide a location!"
-            status = 200
+            status = 400
         elif validate.valid_length(location) is False:
             message = "Location cannot be less than 4 or more than 30 characters"
-            status = 200
+            status = 400
         elif not topic.strip():
             message = "Please provide a topic!"
-            status = 200
+            status = 400
         elif validate.valid_length(topic) is False:
             message = "Topic cannot be less than 4 or more than 30 characters"
             status = 400
         elif not happeningOn.strip():
             message = "Please provide a date for the meetup!"
-            status = 200
+            status = 400
         elif current_user[5] is False:
             message = "Requires Admin Login!"
             status = 401
@@ -66,5 +66,6 @@ def post_meetup(current_user):
 @ver2.route("/meetups", methods=["GET"])
 def get_meetups():
     """Endpoint to get all meetups"""
-    return 'Home'
-    
+    meetups = db.get_meetups()
+
+    return jsonify({"message": "All meetups", "status": 200, "meetups": meetups}), 200

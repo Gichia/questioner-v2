@@ -49,3 +49,10 @@ class BaseModel:
         curr.execute(query)
         result = curr.fetchall()
         return result
+
+    def delete_data(self, query, meetup_id):
+        """Method to delete data from db"""
+        curr = self.db.cursor()
+        curr.execute(query, meetup_id)
+        self.db.commit()
+        return True

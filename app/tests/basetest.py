@@ -42,6 +42,12 @@ class BaseTest(unittest.TestCase):
         query = """DELETE FROM meetups WHERE topic=%s"""
         self.curr.execute(query, (topic,))
         self.db.commit()
+
+    def delete_comment(self, comment):
+        """Method to delete meetups after tests"""
+        query = """DELETE FROM comments WHERE comment=%s"""
+        self.curr.execute(query, (comment,))
+        self.db.commit()
         
     def tearDown(self):
         """Tear down the app after running tests"""

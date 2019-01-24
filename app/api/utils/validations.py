@@ -20,7 +20,7 @@ class Validations:
 
     def valid_length(self, phrase):
         """Method to validate length of string"""
-        if len(phrase) < 4 or len(phrase) > 30:
+        if len(phrase) < 3 or len(phrase) > 250:
             return False
 
     def is_string(self, phrase):

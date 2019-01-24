@@ -57,13 +57,13 @@ def login_required(f):
             token = request.headers["x-access-token"]
 
         if not token:
-            return make_response(jsonify({"status": 401, "message":"Login required!"}), 401)
+            return make_response(jsonify({"status": 401, "error":"Login required!"}), 401)
 
         try:
             data = jwt.decode(token, Config.SECRET_KEY)
             current_user = UserClass().get_user(data["sub"])
         except:
-            return make_response(jsonify({"status": 401, "message":"Token is Invalid!"}), 401)
+            return make_response(jsonify({"status": 401, "error":"Token is Invalid, Please Login Again!"}), 401)
 
         return f(current_user, *args, **kwargs)
     return decorated

@@ -12,7 +12,7 @@ db = MeetupsClass()
 @login_required
 def post_meetup(current_user):
     """Register new user endpoint"""
-    message = ''
+    error = ""
     status =200
     response = {}
     
@@ -24,96 +24,153 @@ def post_meetup(current_user):
         tags = data["tags"]
 
         if not location.strip():
-            message = "Please provide a location!"
+            error = "Please provide a location!"
             status = 400
         elif validate.valid_length(location) is False:
-            message = "Location cannot be less than 4 or more than 30 characters"
+            error = "Location cannot be less than 4 or more than 30 characters"
             status = 400
         elif not topic.strip():
-            message = "Please provide a topic!"
+            error = "Please provide a topic!"
             status = 400
         elif validate.valid_length(topic) is False:
-            message = "Topic cannot be less than 4 or more than 30 characters"
+            error = "Topic cannot be less than 4 or more than 30 characters"
             status = 400
         elif not happeningOn.strip():
-            message = "Please provide a date for the meetup!"
+            error = "Please provide a date for the meetup!"
             status = 400
         elif current_user[5] is False:
-            message = "Requires Admin Login!"
+            error = "Requires Admin Login!"
             status = 401
         else:
-            user = dict(
-                user_id=current_user[0],
-                firstname=current_user[1].strip(),
-                lastname=current_user[2].strip(),
-                email = current_user[3].strip(),
-                createdOn=current_user[4].strip(),
-                isAdmin=current_user[5]
+            data = dict(
+                user=current_user[0],
+                location=location,
+                topic=topic,
+                happeningOn = happeningOn,
+                tags=tags
             )
 
-            db.post_meetup(user["user_id"], location, topic, happeningOn, tags)
-            message = "Meetup succesfully created!"
+            db.post_meetup(data["user"], location, topic, happeningOn, tags)
             status = 201
     except:
-        message = "Please provide all the required fields!"
+        error = "Please provide all the required fields!"
         status = 500
 
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
 
-    response.update({"status": status, "message": message})
+    response.update({"status": status, "data": data})
     return jsonify(response), status
 
 @ver2.route("/meetups/<int:meetup_id>", methods=["GET"])
 def get_single_meetup(meetup_id):
     """Endpoint to get specific meetup"""
-    message = ''
+    error = ""
     status = 200
     response = {}
 
-    meetup = db.get_single_meetup(meetup_id)
+    data = db.get_single_meetup(meetup_id)
     
-    if not meetup:
-        message = 'Meetup not found!'
-        status = 404
-    else:
-        message = 'Succesfull!'
+    if data:
+        meetup = {}
+        for meet in data:
+            m = {
+                "id": meet[0],
+                "createdOn": meet[4].strip(),
+                "location": meet[2].strip(),
+                "topic": meet[3].strip(),
+                "images": meet[5],
+                "tags": meet[6].strip()
+            }
+            meetup.update(m)
         status = 200
+    else:
+        error = 'Meetup not found!'
+        status = 404
 
-    response.update({"status": status, "message": message, "meetup": meetup})
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": meetup})
     return jsonify(response), status
 
 @ver2.route("/meetups", methods=["GET"])
 def get_meetups():
     """Endpoint to get all meetups"""
-    message = ""
+    error = ""
     status = 200
     response = {}
 
-    meetups = db.get_meetups()
+    data = db.get_meetups()
 
-    if not meetups:
-        message = "No meetups yet"
-        status = 404
-    else:
-        message = "All meetups"
+    if data:
+        meetups = []
+        for meetup in data:
+            meet = {
+                "id": meetup["meetup_id"],
+                "createdOn": meetup["createdon"].strip(),
+                "location": meetup["location"].strip(),
+                "topic": meetup["topic"].strip(),
+                "images": meetup["images"],
+                "tags": meetup["tags"].strip()
+            }
+            meetups.append(meet)
+
         status = 200
+    else:
+        error = "No meetups yet"
+        status = 404
 
-    response.update({"status": status, "message": message, "meetup": meetups})
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": meetups})
     return jsonify(response), status
 
 
 @ver2.route("/meetups/upcoming", methods=["GET"])
 def get_upcoming_meetups():
     """Endpoint to get all upcoming meetups"""
-    meetups = db.get_meetups()
+    error = ""
+    status = 200
+    response = {}
 
-    return jsonify({"message": "Upcoming meetups", "status": 200, "meetups": meetups}), 200
+    data = db.get_meetups()
+
+    if data:
+        meetups = []
+        for meetup in data:
+            meet = {
+                "id": meetup["meetup_id"],
+                "createdOn": meetup["createdon"].strip(),
+                "location": meetup["location"].strip(),
+                "topic": meetup["topic"].strip(),
+                "images": meetup["images"],
+                "tags": meetup["tags"].strip()
+            }
+            meetups.append(meet)
+
+        status = 200
+    else:
+        error = "No meetups yet"
+        status = 404
+
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": meetups})
+    return jsonify(response), status
 
 
 @ver2.route("/meetups/rsvp/<int:meetup_id>", methods=["POST"])
 @login_required
 def meetup_rsvp(current_user, meetup_id):
     """Meetup rsvp endpoint"""
-    message = ""
+    error = ""
     status =200
     response = {}
     
@@ -121,15 +178,52 @@ def meetup_rsvp(current_user, meetup_id):
         data = request.get_json()
         res = data["response"].lower().strip()
         if (res != "yes" and res != "no" and res != "maybe"):
-            message = "Response can only be Yes, No, or Maybe"
+            error = "Response can only be Yes, No, or Maybe"
             status =400
+        elif not db.get_single_meetup(meetup_id):
+            error = "No meetup found!"
+            status = 404
         else:
             db.meetup_rsvp(current_user[0], meetup_id, res)
-            message = "RSVP Successfully sent!"
+            data = {
+                "meetup": meetup_id,
+                "status": res
+            }
             status =200
     except:
-        message = "Please provide a response!"
+        error = "Please provide a response!"
         status = 500
+
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": data})
+    return jsonify(response), status
+
+@ver2.route("/meetups/delete/<int:meetup_id>", methods=["DELETE"])
+@login_required
+def delete_meetup(current_user, meetup_id):
+    """Endpoint to delete a meetup"""
+    error = ""
+    message = ""
+    status =200
+    response = {}
+
+    if current_user[5] is False:
+        error = "Requires Admin Login!"
+        status = 401
+    elif not db.get_single_meetup(meetup_id):
+        error = "Meetup not found!"
+        status = 404
+    else:
+        db.delete_meetup(meetup_id)
+        message = "Meetup deleted!"
+        status = 200
+
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
 
     response.update({"status": status, "message": message})
     return jsonify(response), status

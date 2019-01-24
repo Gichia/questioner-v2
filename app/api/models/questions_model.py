@@ -34,18 +34,50 @@ class QuestionsClass(BaseModel):
                 
         return result
 
+    def get_votes(self, question_id):
+        """Method to get question votes"""
+        query = """SELECT SUM(is_like) FROM votes WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        result = curr.fetchone()
+                
+        return result
+
+    def get_question_details(self, question_id):
+        """Method to get question details"""
+        query = """SELECT meetup_id, title, body FROM questions WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        result = curr.fetchone()
+                
+        return result
+
     def get_meetup_questions(self, meetup_id):
         """Method to get specific meetup questions"""
-        query = """SELECT * FROM questions WHERE meetup_id=%s"""
+        query = """SELECT * FROM questions WHERE user_id=%s"""
 
         curr = self.db.cursor()
         curr.execute(query, (meetup_id,))
         results = curr.fetchall()
             
         if len(results) == 0:
-            results = None
-                
-        return results
+            questions = None
+        else:
+            questions = []
+            for res in results:
+                question = {
+                    "question_id": res[0],
+                    "meetup_id": res[1],
+                    "user_id": res[2],
+                    "createdon": res[3].strip(),
+                    "title": res[4].strip(),
+                    "body": res[5].strip()
+                }
+                questions.append(question)
+
+        return questions
 
     def validate_downvote(self, user_id, question_id):
         """Method to validate if user has voted"""
@@ -85,7 +117,6 @@ class QuestionsClass(BaseModel):
         res = curr.fetchone()
         return res
 
-
     def upvote_question(self, user_id, question_id):
         """Method to upvote a question"""
         res = self.validate_upvote(user_id, question_id)
@@ -104,4 +135,24 @@ class QuestionsClass(BaseModel):
                     VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(is_like)s )"""
 
             data = self.post_data(query, upvote)
+            return data
+
+    def post_comment(self, question_id, user_id, response):
+        """Method to post a comment on a question"""
+        res = self.get_single_question(question_id)
+
+        if not res:
+            return False
+        else:
+            comment_data = {
+                "question_id": question_id,
+                "user_id": user_id,
+                "createdon": datetime.datetime.now(),
+                "response": response
+            }
+
+            query = """INSERT INTO comments (user_id, question_id, createdon, comment) 
+                    VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(response)s )"""
+
+            data = self.post_data(query, comment_data)
             return data

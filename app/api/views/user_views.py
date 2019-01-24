@@ -11,7 +11,7 @@ validate = Validations()
 def user_signup():
     """Register new user endpoint"""
 
-    message = ''
+    error = ""
     status = 200
     response = {}
 
@@ -24,35 +24,35 @@ def user_signup():
         password = data["password"]
 
         if not firstname.strip():
-            message = "Please provide your firstname!"
-            status = 200
+            error = "Please provide your firstname!"
+            status = 400
         elif validate.valid_length(firstname) is False:
-            message = "FirstName cannot be less than 4 or more than 30 characters"
-            status = 200
+            error = "FirstName cannot be less than 3 or more than 30 characters"
+            status = 400
         elif not lastname.strip():
-            message = "Please provide your lastname!"
-            status = 200
+            error = "Please provide your lastname!"
+            status = 400
         elif validate.valid_length(lastname) is False:
-            message = "LastName cannot be less than 4 or more than 30 characters"
+            error = "LastName cannot be less than 3 or more than 30 characters"
             status = 400
         elif not email.strip():
-            message = "Please provide an email!"
+            error = "Please provide an email!"
             status = 400
         elif validate.is_valid_email(email) is False:
-            message = "Please provide a valid email!"
+            error = "Please provide a valid email!"
             status = 400
         elif not password.strip():
-            message = "Please provide a password!"
+            error = "Please provide a password!"
             status = 400
         elif validate.is_valid_password(password) is False:
-            message = "Please provide a stronger password!"
+            error = "Please provide a stronger password!"
             status = 400
         elif not phone.strip():
-            message = "Please provide a phone number!"
+            error = "Please provide a phone number!"
             status = 400
         else:
             if db.get_email(email):
-                message = "That email exists!"
+                error = "That email exists!"
                 status = 409
             else:
                 new_user = {
@@ -64,20 +64,23 @@ def user_signup():
                 }
 
                 db.save_user(new_user)
-                message = "Succesfully registered, you can now login!"
                 status = 201
     except:
-        message = "Please provide correct details"
+        error = "Please provide all required details"
         status = 500
 
-    response.update({"status": status, "message": message})
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": new_user})
     return jsonify(response), status
 
 
 @ver2.route("/auth/login")
 def user_login():
     """Login user endpoint"""
-    message = ''
+    error = ""
     status = 200
     token = None
     response = {}
@@ -85,17 +88,20 @@ def user_login():
     auth = request.authorization
 
     if not auth or not auth.username or not auth.password:
-        message = 'Please provide your login info'
+        error = 'Please provide your login info'
         status = 401
 
     token = db.login_user(auth.username, auth.password)
 
     if not token:
-        message = 'Incorrect login details!'
+        error = 'Incorrect login details!'
         status = 401
     else:
-        message = 'Successfully logged in!'
         status = 200
 
-    response.update({"status": status, "message": message, "token": token})
+    if error:
+        response.update({"status": status, "error": error})
+        return jsonify(response), status
+
+    response.update({"status": status, "data": token})
     return jsonify(response), status

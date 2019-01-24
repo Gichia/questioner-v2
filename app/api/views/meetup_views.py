@@ -63,7 +63,7 @@ def post_meetup(current_user):
     return jsonify(response), status
 
 @ver2.route("/meetups/<int:meetup_id>", methods=["GET"])
-def get_singel_meetup(meetup_id):
+def get_single_meetup(meetup_id):
     """Endpoint to get specific meetup"""
     message = ''
     status = 200
@@ -84,9 +84,21 @@ def get_singel_meetup(meetup_id):
 @ver2.route("/meetups", methods=["GET"])
 def get_meetups():
     """Endpoint to get all meetups"""
+    message = ""
+    status = 200
+    response = {}
+
     meetups = db.get_meetups()
 
-    return jsonify({"message": "All meetups", "status": 200, "meetups": meetups}), 200
+    if not meetups:
+        message = "No meetups yet"
+        status = 404
+    else:
+        message = "All meetups"
+        status = 200
+
+    response.update({"status": status, "message": message, "meetup": meetups})
+    return jsonify(response), status
 
 
 @ver2.route("/meetups/upcoming", methods=["GET"])

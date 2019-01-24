@@ -85,7 +85,6 @@ class QuestionsClass(BaseModel):
         res = curr.fetchone()
         return res
 
-
     def upvote_question(self, user_id, question_id):
         """Method to upvote a question"""
         res = self.validate_upvote(user_id, question_id)
@@ -104,4 +103,24 @@ class QuestionsClass(BaseModel):
                     VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(is_like)s )"""
 
             data = self.post_data(query, upvote)
+            return data
+
+    def post_comment(self, question_id, user_id, response):
+        """Method to post a comment on a question"""
+        res = self.get_single_question(question_id)
+
+        if not res:
+            return False
+        else:
+            comment_data = {
+                "question_id": question_id,
+                "user_id": user_id,
+                "createdon": datetime.datetime.now(),
+                "response": response
+            }
+
+            query = """INSERT INTO comments (user_id, question_id, createdon, comment) 
+                    VALUES ( %(user_id)s, %(question_id)s, %(createdon)s, %(response)s )"""
+
+            data = self.post_data(query, comment_data)
             return data

@@ -10,6 +10,10 @@ data = {
 	"body": "body"
 }
 
+comment = {
+    "comment": "Comment 1"
+}
+
 class TestQuestions(BaseTest):
     """ Class to test all user endpoints """
 
@@ -50,3 +54,14 @@ class TestQuestions(BaseTest):
         result = json.loads(response.data.decode("UTF-8"))
 
         self.assertEqual(result["message"], "Resource not found!")
+
+    def test_comment_question(self):
+        """Method to test comment question endpoint"""
+        url = "http://localhost:5000/api/comments/1"
+
+        response = self.post(url, comment)
+        result = json.loads(response.data.decode("UTF-8"))
+
+        self.assertEqual(result["status"], 201)
+
+        self.delete_comment("Comment 1")

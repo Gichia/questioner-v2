@@ -62,3 +62,16 @@ class MeetupsClass(BaseModel):
         data = self.get_data(query)
         return data
 
+    def delete_meetup(self, meetup_id):
+        """Method to allow Admin to delete meetup"""
+        res = self.get_single_meetup(meetup_id)
+
+        if not res:
+            return False
+        else:
+            query = """DELETE FROM meetups WHERE meetup_id=%s"""
+
+            curr = self.db.cursor()
+            curr.execute(query, (meetup_id,))
+            self.db.commit()
+            return True

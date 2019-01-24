@@ -124,3 +124,33 @@ def downvote_question(current_user, question_id):
 
     response.update({"status": status, "message": message})
     return jsonify(response), status
+
+@ver2.route("/comments/<int:question_id>", methods=["POST"])
+@login_required
+def comment_question(current_user, question_id):
+    """Endpoint to comment on a question"""
+    message = ""
+    status = 200
+    response = {}
+
+    try:
+        data = request.get_json()
+        comment = data["comment"]
+        if not comment.strip():
+            message = "Please provide a comment!"
+            status = 400
+        elif validate.valid_length(comment) is False:
+            message = "A comment cannot be less than 4 or more than 30 characters"
+            status = 400
+        else:
+            db.post_comment(current_user[0], question_id, comment)
+            message = "Comment succesfully submitted!"
+            status = 201
+    except:
+        message = "Please provide correct details"
+        status = 500
+
+    response.update({"status": status, "message": message})
+    return jsonify(response), status
+
+    

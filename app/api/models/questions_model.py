@@ -34,18 +34,50 @@ class QuestionsClass(BaseModel):
                 
         return result
 
+    def get_votes(self, question_id):
+        """Method to get question votes"""
+        query = """SELECT SUM(is_like) FROM votes WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        result = curr.fetchone()
+                
+        return result
+
+    def get_question_details(self, question_id):
+        """Method to get question details"""
+        query = """SELECT meetup_id, title, body FROM questions WHERE question_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (question_id,))
+        result = curr.fetchone()
+                
+        return result
+
     def get_meetup_questions(self, meetup_id):
         """Method to get specific meetup questions"""
-        query = """SELECT * FROM questions WHERE meetup_id=%s"""
+        query = """SELECT * FROM questions WHERE user_id=%s"""
 
         curr = self.db.cursor()
         curr.execute(query, (meetup_id,))
         results = curr.fetchall()
             
         if len(results) == 0:
-            results = None
-                
-        return results
+            questions = None
+        else:
+            questions = []
+            for res in results:
+                question = {
+                    "question_id": res[0],
+                    "meetup_id": res[1],
+                    "user_id": res[2],
+                    "createdon": res[3].strip(),
+                    "title": res[4].strip(),
+                    "body": res[5].strip()
+                }
+                questions.append(question)
+
+        return questions
 
     def validate_downvote(self, user_id, question_id):
         """Method to validate if user has voted"""

@@ -40,7 +40,7 @@ def post_meetup(current_user):
             status = 400
         elif current_user[5] is False:
             error = "Requires Admin Login!"
-            status = 401
+            status = 403
         else:
             data = dict(
                 user=current_user[0],
@@ -80,8 +80,9 @@ def get_single_meetup(meetup_id):
                 "createdOn": meet[4].strip(),
                 "location": meet[2].strip(),
                 "topic": meet[3].strip(),
-                "images": meet[5],
-                "tags": meet[6].strip()
+                "happeningon": meet[5].strip(),
+                "tags": meet[7].strip(),
+                "images": meet[6]
             }
             meetup.update(m)
         status = 200
@@ -112,6 +113,7 @@ def get_meetups():
                 "id": meetup["meetup_id"],
                 "createdOn": meetup["createdon"].strip(),
                 "location": meetup["location"].strip(),
+                "happeningon": meetup["happeningon"].strip(),
                 "topic": meetup["topic"].strip(),
                 "images": meetup["images"],
                 "tags": meetup["tags"].strip()
@@ -149,7 +151,8 @@ def get_upcoming_meetups():
                 "location": meetup["location"].strip(),
                 "topic": meetup["topic"].strip(),
                 "images": meetup["images"],
-                "tags": meetup["tags"].strip()
+                "tags": meetup["tags"].strip(),
+                "happeningon": meetup["happeningon"].strip()
             }
             meetups.append(meet)
 
@@ -183,6 +186,9 @@ def meetup_rsvp(current_user, meetup_id):
         elif not db.get_single_meetup(meetup_id):
             error = "No meetup found!"
             status = 404
+        elif db.get_rsvp(current_user[0], meetup_id):
+            error = "You have already sent an rsvp for this meetup!"
+            status = 400
         else:
             db.meetup_rsvp(current_user[0], meetup_id, res)
             data = {
@@ -212,7 +218,7 @@ def delete_meetup(current_user, meetup_id):
 
     if current_user[5] is False:
         error = "Requires Admin Login!"
-        status = 401
+        status = 403
     elif not db.get_single_meetup(meetup_id):
         error = "Meetup not found!"
         status = 404

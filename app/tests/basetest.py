@@ -16,7 +16,7 @@ class BaseTest(unittest.TestCase):
         """Initializes our app and tests"""
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client()
-        self.db = pg2.connect(os.getenv("DATABASE_URL"))
+        self.db = pg2.connect(os.getenv("TEST_DATABASE_URL"))
         self.curr = self.db.cursor()
 
     def post(self, url, data):
@@ -33,7 +33,7 @@ class BaseTest(unittest.TestCase):
     
     def delete_email(self, email):
         """Method to delete user email after tests"""
-        query = """DELETE FROM app_users WHERE email=%s"""
+        query = """DELETE FROM users WHERE email=%s"""
         self.curr.execute(query, (email,))
         self.db.commit()
 

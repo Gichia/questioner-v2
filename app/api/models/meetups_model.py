@@ -5,18 +5,19 @@ from .basemodel import BaseModel
 class MeetupsClass(BaseModel):
     """Class to initiate db and contain common meetup methods"""
     
-    def post_meetup(self, user_id, location, topic, happeningOn, tags):
+    def post_meetup(self, user_id, location, topic, happeningon, tags):
         """Method to post a new meetup"""
         meetup = {
             "created_by": user_id,
             "location": location,
             "topic": topic,
             "tags": tags,
-            "createdon": datetime.datetime.now()
+            "createdon": datetime.datetime.now(),
+            "happeningon": happeningon
         }
 
-        query = """INSERT INTO meetups (created_by, location, topic, tags, createdon) 
-                VALUES ( %(created_by)s, %(location)s, %(topic)s, %(tags)s, %(createdon)s )"""
+        query = """INSERT INTO meetups (created_by, location, topic, tags, createdon, happeningon) 
+                VALUES ( %(created_by)s, %(location)s, %(topic)s, %(tags)s, %(createdon)s, %(happeningon)s ) RETURNING meetup_id"""
 
         data = self.post_data(query, meetup)
         return data
@@ -61,6 +62,15 @@ class MeetupsClass(BaseModel):
 
         data = self.get_data(query)
         return data
+
+    def get_rsvp(self, user_id, meetup_id):
+        """Method to check if user has rsvp"""
+        query = """SELECT * FROM rsvp WHERE meetup_id=%s AND user_id=%s"""
+
+        curr = self.db.cursor()
+        curr.execute(query, (meetup_id, user_id,))
+        res = curr.fetchone()
+        return res
 
     def delete_meetup(self, meetup_id):
         """Method to allow Admin to delete meetup"""

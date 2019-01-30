@@ -39,9 +39,9 @@ class BaseModel:
     def post_data(self, query, data):
         """Method to post data to db"""
         curr = self.db.cursor()
-        curr.execute(query, data)
+        res = curr.execute(query, data)
         self.db.commit()
-        return data
+        return res
         
     def get_data(self, query):
         """Method to get data from db"""

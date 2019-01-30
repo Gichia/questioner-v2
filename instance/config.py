@@ -22,5 +22,6 @@ class Testing(Config):
 
 config = {
     "development": Development,
-    "testing": Testing
+    "testing": Testing,
+    "db_url": os.getenv("DATABASE_URL")
 }

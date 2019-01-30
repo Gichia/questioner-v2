@@ -33,9 +33,9 @@ class TestMeetups(BaseTest):
         result2 = json.loads(response2.data.decode("UTF-8"))
 
         self.assertEqual(result["status"], 200)
-        self.assertEqual(result2["message"], "Resource not found!")
+        self.assertEqual(result2["error"], "Resource not found!")
 
-    def test_post_meetup(self):
+    def test_get_post_meetup(self):
         """Method to test post meetup endpoint"""
         url = "http://localhost:5000/api/meetups"
         url2 = "http://localhost:5000/api/meetups"
@@ -49,7 +49,7 @@ class TestMeetups(BaseTest):
         result3 = json.loads(response3.data.decode("UTF-8"))
 
         self.assertEqual(result["status"], 201)
-        self.assertEqual(result2["message"], "Please provide all the required fields!")
+        self.assertEqual(result2["error"], "Please provide all the required fields!")
         self.assertEqual(result3["status"], 401)
 
     def test_get_specific_meetup(self):
@@ -84,7 +84,7 @@ class TestMeetups(BaseTest):
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
 
-        self.assertEqual(result["message"], "Meetup not found!")
+        self.assertEqual(result["error"], "Meetup not found!")
 
     def test_bad_meetup_url(self):
         """Test correct response for wrong meetup url endpoint"""
@@ -93,4 +93,4 @@ class TestMeetups(BaseTest):
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
 
-        self.assertEqual(result["message"], "Resource not found!")
+        self.assertEqual(result["error"], "Resource not found!")

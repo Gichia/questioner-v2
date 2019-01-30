@@ -26,11 +26,10 @@ class TestQuestions(BaseTest):
         result = json.loads(response.data.decode("UTF-8"))
 
         self.assertEqual(result["status"], 201)
-        self.assertEqual(result["message"], "Succesfully added!")
 
     def test_get_questions(self):
         """Test all meetups questions"""
-        url = "http://localhost:5000/api/questions/8"
+        url = "http://localhost:5000/api/questions/1"
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
@@ -44,7 +43,7 @@ class TestQuestions(BaseTest):
         response = self.post(url, data)
         result = json.loads(response.data.decode("UTF-8"))
 
-        self.assertEqual(result["message"], "Meetup not found!")
+        self.assertEqual(result["error"], "Meetup not found!")
 
     def test_bad_question_url(self):
         """Test correct response for wrong question url endpoint"""
@@ -53,11 +52,11 @@ class TestQuestions(BaseTest):
         response = self.post(url, data)
         result = json.loads(response.data.decode("UTF-8"))
 
-        self.assertEqual(result["message"], "Resource not found!")
+        self.assertEqual(result["error"], "Resource not found!")
 
     def test_comment_question(self):
         """Method to test comment question endpoint"""
-        url = "http://localhost:5000/api/comments/1"
+        url = "http://localhost:5000/api/comments/15"
 
         response = self.post(url, comment)
         result = json.loads(response.data.decode("UTF-8"))

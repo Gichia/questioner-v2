@@ -19,7 +19,7 @@ class TestQuestions(BaseTest):
 
     def test_post_question(self):
         """Method to test post meetup endpoint"""
-        url = "http://localhost:5000/api/questions/1"
+        url = "http://localhost:5000/api/v2/questions/1"
 
         response = self.post(url, data)
 
@@ -29,7 +29,7 @@ class TestQuestions(BaseTest):
 
     def test_get_questions(self):
         """Test all meetups questions"""
-        url = "http://localhost:5000/api/questions/1"
+        url = "http://localhost:5000/api/v2/questions/1"
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
@@ -38,7 +38,7 @@ class TestQuestions(BaseTest):
 
     def test_meetup_not_found(self):
         """Test correct response for question not found"""
-        url = "http://localhost:5000/api/questions/0"
+        url = "http://localhost:5000/api/v2/questions/0"
 
         response = self.post(url, data)
         result = json.loads(response.data.decode("UTF-8"))
@@ -47,7 +47,7 @@ class TestQuestions(BaseTest):
 
     def test_bad_question_url(self):
         """Test correct response for wrong question url endpoint"""
-        url = "http://localhost:5000/api/question/0"
+        url = "http://localhost:5000/api/v2/question/0"
 
         response = self.post(url, data)
         result = json.loads(response.data.decode("UTF-8"))
@@ -56,7 +56,7 @@ class TestQuestions(BaseTest):
 
     def test_comment_question(self):
         """Method to test comment question endpoint"""
-        url = "http://localhost:5000/api/comments/15"
+        url = "http://localhost:5000/api/v2/comments/15"
 
         response = self.post(url, comment)
         result = json.loads(response.data.decode("UTF-8"))

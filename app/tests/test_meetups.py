@@ -23,8 +23,8 @@ class TestMeetups(BaseTest):
 
     def test_get_meetups(self):
         """Method to test get all meetups endpoint"""
-        url = "http://localhost:5000/api/meetups"
-        url2 = "http://localhost:5000/api/meetup"
+        url = "http://localhost:5000/api/v2/meetups"
+        url2 = "http://localhost:5000/api/v2/meetup"
 
         response = self.get_items(url)
         response2 = self.get_items(url2)
@@ -37,8 +37,8 @@ class TestMeetups(BaseTest):
 
     def test_get_post_meetup(self):
         """Method to test post meetup endpoint"""
-        url = "http://localhost:5000/api/meetups"
-        url2 = "http://localhost:5000/api/meetups"
+        url = "http://localhost:5000/api/v2/meetups"
+        url2 = "http://localhost:5000/api/v2/meetups"
 
         response = self.post(url, data)
         response2 = self.post(url2, data2)
@@ -59,7 +59,7 @@ class TestMeetups(BaseTest):
         self.curr.execute(query, (topic,))
         tm = self.curr.fetchone()
         
-        url = "http://localhost:5000/api/meetups/{}".format(tm[0])
+        url = "http://localhost:5000/api/v2/meetups/{}".format(tm[0])
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
@@ -70,7 +70,7 @@ class TestMeetups(BaseTest):
 
     def test_get_upcoming(self):
         """Test upcoming meetups"""
-        url = "http://localhost:5000/api/meetups/upcoming"
+        url = "http://localhost:5000/api/v2/meetups/upcoming"
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
@@ -79,7 +79,7 @@ class TestMeetups(BaseTest):
 
     def test_meetup_not_found(self):
         """Test correct response for meetup not found"""
-        url = "http://localhost:5000/api/meetups/0"
+        url = "http://localhost:5000/api/v2/meetups/0"
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))
@@ -88,7 +88,7 @@ class TestMeetups(BaseTest):
 
     def test_bad_meetup_url(self):
         """Test correct response for wrong meetup url endpoint"""
-        url = "http://localhost:5000/api/meetup/0"
+        url = "http://localhost:5000/api/v2/meetup/0"
 
         response = self.get_items(url)
         result = json.loads(response.data.decode("UTF-8"))

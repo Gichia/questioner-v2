@@ -34,7 +34,7 @@ class TestUsers(BaseTest):
 
     def test_user_signup(self):
         """Method to test user signup"""
-        url = "http://localhost:5000/api/auth/signup"
+        url = "http://localhost:5000/api/v2/auth/signup"
 
         response = self.post(url, db_data)
         response2 = self.post(url, db_data2)

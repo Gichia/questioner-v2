@@ -1,9 +1,9 @@
 ''' Creates the base of the API'''
+import os
 from app import create_app
-from instance.config import config
 
-CONFIG_NAME = 'development'
-app = create_app(CONFIG_NAME)
+env = os.getenv('FLASK_ENV')
+app = create_app(env)
 
 if __name__ == "__main__":
     app.run()

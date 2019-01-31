@@ -9,6 +9,12 @@ from instance.config import Config
 from app import create_app
 from app.database import db_tables, drop_tables
 
+data = {
+	"topic": "Test Topic Master",
+	"location": "Westlands",
+	"happeningOn": "12/12/2020",
+	"tags": ["test", "test2"]
+}
 
 class BaseTest(unittest.TestCase):
     """Initializes our setUp for tests"""
@@ -18,6 +24,7 @@ class BaseTest(unittest.TestCase):
         self.client = self.app.test_client()
         self.db = pg2.connect(os.getenv("DATABASE_URL"))
         self.curr = self.db.cursor()
+        self.post("http://localhost:5000/api/v2/meetups", data)
 
     def post(self, url, data):
         """Method for post tests"""

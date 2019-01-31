@@ -35,7 +35,7 @@ class TestMeetups(BaseTest):
         self.assertEqual(result["status"], 200)
         self.assertEqual(result2["error"], "Resource not found!")
 
-    def test_get_post_meetup(self):
+    def test_post_meetup(self):
         """Method to test post meetup endpoint"""
         url = "http://localhost:5000/api/v2/meetups"
         url2 = "http://localhost:5000/api/v2/meetups"

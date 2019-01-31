@@ -33,7 +33,7 @@ class BaseTest(unittest.TestCase):
     
     def delete_email(self, email):
         """Method to delete user email after tests"""
-        query = """DELETE FROM users WHERE email=%s"""
+        query = """DELETE FROM app_users WHERE email=%s"""
         self.curr.execute(query, (email,))
         self.db.commit()
 

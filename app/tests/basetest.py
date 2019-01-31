@@ -16,7 +16,7 @@ class BaseTest(unittest.TestCase):
         """Initializes our app and tests"""
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client()
-        self.db = pg2.connect(os.getenv("TEST_DATABASE_URL"))
+        self.db = pg2.connect(os.getenv("DATABASE_URL"))
         self.curr = self.db.cursor()
 
     def post(self, url, data):

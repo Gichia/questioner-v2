@@ -13,7 +13,7 @@ chardet==3.0.4
 Click==7.0
 colorama==0.4.0
 coverage==4.5.2
-cryptography==2.4.2
+cryptography==3.2
 execnet==1.5.0
 filelock==3.0.10
 Flask==1.0.2
